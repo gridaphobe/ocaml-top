@@ -12,4 +12,5 @@ depends: [
   "conf-gtksourceview" {= "2"}
   "ocp-indent" {>= "1.4.0"}
   "ocp-index" {>= "1.0.0"}
+  "ezjsonm" {>= "0.2.0"}
 ]

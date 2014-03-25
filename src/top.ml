@@ -13,6 +13,7 @@
 (**************************************************************************)
 
 open Tools.Ops
+open Trace
 
 type status =
   | Starting
@@ -244,6 +245,7 @@ let flush t = flush t.query_channel
 let query t q cont =
   try
     assert (t.receive_hook = None);
+    trace "QUERY" q;
     t.receive_hook <-
       Some (await_full_response @@ fun response ->
           t.receive_hook <- None;
