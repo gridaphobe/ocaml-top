@@ -89,6 +89,7 @@ module TopActions = struct
       ~cont:(fun () -> TopUi.topeval ~full buf top)
 
   let stop top buf =
+    Trace.trace Trace.Abort buf;
     buf.OBuf.gbuffer#move_mark buf.OBuf.eval_mark_end#coerce
       ~where:(buf.OBuf.gbuffer#get_iter_at_mark buf.OBuf.eval_mark#coerce);
     match top.TopUi.process with Some process -> Top.stop process
@@ -96,6 +97,7 @@ module TopActions = struct
 
   let restart top buf =
     Gui.Controls.disable `RESTART;
+    Trace.trace Trace.Restart buf;
     buf.OBuf.gbuffer#move_mark buf.OBuf.eval_mark_end#coerce
       ~where:buf.OBuf.gbuffer#start_iter;
     top.TopUi.buffer#delete

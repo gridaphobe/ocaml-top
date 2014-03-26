@@ -284,6 +284,7 @@ let topeval ?(full=false) buf top =
                else cleanup_source_marks rest)
   in
   let phrases = get_phrases buf start stop in
+  Trace.trace (Trace.Eval (start,stop)) buf;
   eval_phrases phrases
 
 let create_buffer () =

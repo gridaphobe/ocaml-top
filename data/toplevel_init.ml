@@ -21,7 +21,7 @@ open Pervasives
 
 module Printf = struct
   include Printf
-  let printf fmt = fprintf stdout fmt;;
+  let printf fmt = fprintf stdout fmt; flush stdout;;
 end
 
 module Format = struct
