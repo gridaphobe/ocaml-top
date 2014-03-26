@@ -164,7 +164,8 @@ let start schedule response_handler status_hook =
     (* Run ocamlrun rather than ocaml directly, otherwise another process is
        spawned and, on windows, that messes up our process handling *)
     let args = !Cfg.ocaml_cmd :: !Cfg.ocaml_opts
-               @ [ "-init"; Filename.concat !Cfg.datadir "toplevel_init.ml" ]
+               (* just capture everything *)
+               (* @ [ "-init"; Filename.concat !Cfg.datadir "toplevel_init.ml" ] *)
     in
     Tools.debug "Running %S..." (String.concat " " args);
     try

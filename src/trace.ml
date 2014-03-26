@@ -16,11 +16,7 @@ let traceFile = Filename.concat (Sys.getenv "HOME") ".ocaml-top-trace"
 
 let trace evt body =
   let tm = Unix.gettimeofday () in
-  printf "%s\n" traceFile;
   let s  = to_string (json_of_event { time=tm; kind=evt; body=body }) in
-  printf "%s\n" s;
   let oc = open_out_gen [Open_creat; Open_text; Open_append] 0o640 traceFile in
   fprintf oc "%s\n" s;
-  (* output_string oc "hello\n"; *)
-  (* output_value oc (tm,evt,body); *)
   close_out oc;
