@@ -223,6 +223,10 @@ let init ?name ?contents main_window =
         Gui.top_msg "Working...";
         show_spinner true
   in
+  let rec snapshot () =
+    Thread.delay 30.0; Trace.trace Trace.Timer !buf_ref; snapshot ()
+  in
+  ignore @@ Thread.create snapshot ();
   status_change_hook Top.Starting;
   TopUi.top_start ~init ~status_change_hook toplevel_buffer;
   (* Don't worry about the change hook, it won't be triggered
