@@ -18,13 +18,14 @@ let _ = GtkMain.Main.init()
 
 module Controls = struct
   type t = [ `NEW | `OPEN | `SAVE | `SAVE_AS
-           | `EXECUTE | `EXECUTE_ALL | `STOP | `RESTART | `CLEAR
+           | `EXECUTE | `EXECUTE_ALL | `STOP | `RESTART | `CLEAR | `CONFUSED
            | `SELECT_FONT | `SELECT_COLOR | `ZOOM_IN | `ZOOM_OUT | `FULLSCREEN
            | `QUIT ]
 
   let stock (*: t -> GtkStock.id*) = function
     | `RESTART -> `REFRESH
     | `EXECUTE_ALL -> `MEDIA_FORWARD
+    | `CONFUSED -> `DIALOG_QUESTION
     | #GtkStock.id as id -> id
 
   let icon t =
@@ -38,6 +39,7 @@ module Controls = struct
       | `STOP -> "stop"
       | `RESTART -> "restart"
       | `CLEAR -> "clear"
+      | `CONFUSED -> "confused"
       | `SELECT_FONT -> "setup"
       | `SELECT_COLOR -> "setup"
       | `ZOOM_IN -> "zoom-in"
@@ -67,6 +69,7 @@ module Controls = struct
     | `STOP -> "Stop","Stop ongoing program execution [Esc]"
     | `RESTART -> "Restart","Terminate the current toplevel and start a new one"
     | `CLEAR -> "Clear","Clear the toplevel window history"
+    | `CONFUSED -> "Confused","I am confused about something!"
     | `SELECT_FONT -> "Font...","Change the display font"
     | `SELECT_COLOR -> "Color theme","Switch color theme"
     | `ZOOM_IN -> "Zoom in","Make the font bigger [Ctrl +]"
@@ -194,6 +197,7 @@ let main_window () =
           mkbutton `RESTART;
           mkbutton `EXECUTE_ALL;
           (* mkbutton `CLEAR; *)
+          mkbutton `CONFUSED;
           (GButton.tool_item ~expand:true () :> GObj.widget);
           mkbutton `QUIT;
         ]
@@ -349,6 +353,34 @@ module Dialogs = struct
       GFile.filter ~name:"All files" ~patterns:["*"] ();
     dialog#add_select_button_stock (action :> GtkStock.id) `APPLY;
     dialog#add_button_stock `CANCEL `CANCEL;
+    ignore @@ dialog#connect#response ~callback;
+    dialog#show ()
+
+  let confused buf =
+    let dialog =
+      GWindow.message_dialog
+        ~title:"Confused"
+        ~message:"Please explain why you are confused."
+        ~message_type:`QUESTION
+        ~use_markup:true
+        ~buttons:GWindow.Buttons.ok_cancel
+        ~destroy_with_parent:true
+        ()
+    in
+    let entry =
+      GText.view
+        ~editable:true
+        ~border_width:2
+        (* ~editable:true *)
+        (* ~show:true *)
+        ()
+    in
+    let callback = function
+      | `CANCEL | `DELETE_EVENT -> dialog#destroy ()
+      | `OK -> Trace.trace (Trace.Confused (entry#buffer#get_text ())) buf;
+              dialog#destroy ()
+    in
+    dialog#vbox#add (entry :> GObj.widget);
     ignore @@ dialog#connect#response ~callback;
     dialog#show ()
 

@@ -14,7 +14,7 @@
 
 module Controls : sig
   type t = [ `NEW | `OPEN | `SAVE | `SAVE_AS
-           | `EXECUTE | `EXECUTE_ALL | `STOP | `RESTART | `CLEAR
+           | `EXECUTE | `EXECUTE_ALL | `STOP | `RESTART | `CLEAR | `CONFUSED
            | `SELECT_FONT | `SELECT_COLOR | `ZOOM_IN | `ZOOM_OUT | `FULLSCREEN
            | `QUIT ]
   val bind: t -> (unit -> unit) -> unit
@@ -41,6 +41,8 @@ module Dialogs : sig
     GSourceView2.source_view -> GSourceView2.source_view ->
     on_font_change:(unit -> unit) -> unit
     -> unit
+
+  val confused : Trace.OBuf.t -> unit
 end
 
 val main_window : unit -> GWindow.window

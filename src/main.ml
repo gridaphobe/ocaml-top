@@ -75,6 +75,9 @@ module BufActions = struct
   let new_empty k =
     confirm_discard @@ fun () -> OBuf.create () |> k
 
+  let confused buf =
+    Gui.Dialogs.confused buf
+
   let quit main_window buf =
     if OBuf.is_modified buf then
       Gui.Dialogs.quit (OBuf.filename buf)
@@ -161,13 +164,12 @@ let init ?name ?contents main_window =
     Completion.setup buf !view_ref Gui.index_msg
   in
   let nil () = () in
-  Gui.Controls.bind `NEW     @@ get_buf @@ BufActions.new_empty @@ set_buf;
-  Gui.Controls.bind `OPEN    @@ get_buf @@ BufActions.load_dialog @@ set_buf;
-  Gui.Controls.bind `SAVE_AS @@ get_buf @@ BufActions.save_to_file ~ask:true
-  @@ nil;
-  Gui.Controls.bind `SAVE    @@ get_buf @@ BufActions.save_to_file ~ask:false
-  @@ nil;
-  Gui.Controls.bind `QUIT    @@ get_buf @@ BufActions.quit main_window;
+  Gui.Controls.bind `NEW      @@ get_buf @@ BufActions.new_empty @@ set_buf;
+  Gui.Controls.bind `OPEN     @@ get_buf @@ BufActions.load_dialog @@ set_buf;
+  Gui.Controls.bind `SAVE_AS  @@ get_buf @@ BufActions.save_to_file ~ask:true @@ nil;
+  Gui.Controls.bind `SAVE     @@ get_buf @@ BufActions.save_to_file ~ask:false @@ nil;
+  Gui.Controls.bind `QUIT     @@ get_buf @@ BufActions.quit main_window;
+  Gui.Controls.bind `CONFUSED @@ get_buf @@ BufActions.confused;
   (* Initialize the top-level buffer and actions *)
   let toplevel_buffer = TopUi.create_buffer () in
   let get_top f () = get_buf (f toplevel_buffer) () in
