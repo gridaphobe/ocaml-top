@@ -43,7 +43,7 @@ module Dialogs : sig
     -> unit
 
   val confused : OcamlBuffer.t -> unit
-  val submit   : OcamlBuffer.t -> unit
+  val submit   : OcamlBuffer.t -> save:(unit -> unit) -> unit
 end
 
 val main_window : unit -> GWindow.window

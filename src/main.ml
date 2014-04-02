@@ -79,7 +79,8 @@ module BufActions = struct
     Gui.Dialogs.confused buf
 
   let submit buf =
-    Gui.Dialogs.submit buf
+    let nil () = () in
+    Gui.Dialogs.submit buf ~save:(fun () -> save_to_file ~ask:false nil buf)
 
   let quit main_window buf =
     if OBuf.is_modified buf then

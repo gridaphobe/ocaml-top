@@ -389,7 +389,8 @@ module Dialogs = struct
     ignore @@ dialog#connect#response ~callback;
     dialog#show ()
 
-  let submit buf =
+  let submit buf ~save =
+    save ();
     Trace.trace Trace.Submit buf;
     let cmd = Format.sprintf "turnin -c cs130s %s 2>&1" (OBuf.filename_default buf) in
     let ic, oc = Unix.open_process cmd in
