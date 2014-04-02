@@ -13,11 +13,12 @@
 (**************************************************************************)
 
 open Tools.Ops
+module OBuf = OcamlBuffer
 
 let _ = GtkMain.Main.init()
 
 module Controls = struct
-  type t = [ `NEW | `OPEN | `SAVE | `SAVE_AS
+  type t = [ `NEW | `OPEN | `SAVE | `SAVE_AS | `SUBMIT
            | `EXECUTE | `EXECUTE_ALL | `STOP | `RESTART | `CLEAR | `CONFUSED
            | `SELECT_FONT | `SELECT_COLOR | `ZOOM_IN | `ZOOM_OUT | `FULLSCREEN
            | `QUIT ]
@@ -26,6 +27,7 @@ module Controls = struct
     | `RESTART -> `REFRESH
     | `EXECUTE_ALL -> `MEDIA_FORWARD
     | `CONFUSED -> `DIALOG_QUESTION
+    | `SUBMIT -> `OK
     | #GtkStock.id as id -> id
 
   let icon t =
@@ -40,6 +42,7 @@ module Controls = struct
       | `RESTART -> "restart"
       | `CLEAR -> "clear"
       | `CONFUSED -> "confused"
+      | `SUBMIT -> "submit"
       | `SELECT_FONT -> "setup"
       | `SELECT_COLOR -> "setup"
       | `ZOOM_IN -> "zoom-in"
@@ -70,6 +73,7 @@ module Controls = struct
     | `RESTART -> "Restart","Terminate the current toplevel and start a new one"
     | `CLEAR -> "Clear","Clear the toplevel window history"
     | `CONFUSED -> "Confused","I am confused about something!"
+    | `SUBMIT -> "Submit","Submit this file for grading"
     | `SELECT_FONT -> "Font...","Change the display font"
     | `SELECT_COLOR -> "Color theme","Switch color theme"
     | `ZOOM_IN -> "Zoom in","Make the font bigger [Ctrl +]"
@@ -191,6 +195,7 @@ let main_window () =
           mkbutton `OPEN;
           mkbutton `SAVE;
           mkbutton `SAVE_AS;
+          mkbutton `SUBMIT;
           (GButton.separator_tool_item () :> GObj.widget);
           mkbutton `EXECUTE;
           mkbutton `STOP;
@@ -381,6 +386,35 @@ module Dialogs = struct
               dialog#destroy ()
     in
     dialog#vbox#add (entry :> GObj.widget);
+    ignore @@ dialog#connect#response ~callback;
+    dialog#show ()
+
+  let submit buf =
+    Trace.trace Trace.Submit buf;
+    let cmd = Format.sprintf "turnin -c cs130s %s 2>&1" (OBuf.filename_default buf) in
+    let ic, oc = Unix.open_process cmd in
+    let buf = Buffer.create 16 in
+    (try
+        while true do
+          Buffer.add_channel buf ic 1
+        done
+      with End_of_file -> ());
+    let _ = Unix.close_process (ic, oc) in
+    let out = Buffer.contents buf
+    in
+    let dialog =
+      GWindow.message_dialog
+        ~title:"Turnin"
+        ~message:out
+        ~message_type:`INFO
+        ~buttons:GWindow.Buttons.ok
+        ~use_markup:true
+        ~destroy_with_parent:true
+        ()
+    in
+    let callback = function
+      | `OK | `DELETE_EVENT -> dialog#destroy ()
+    in
     ignore @@ dialog#connect#response ~callback;
     dialog#show ()
 

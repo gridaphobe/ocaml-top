@@ -13,7 +13,7 @@
 (**************************************************************************)
 
 module Controls : sig
-  type t = [ `NEW | `OPEN | `SAVE | `SAVE_AS
+  type t = [ `NEW | `OPEN | `SAVE | `SAVE_AS | `SUBMIT
            | `EXECUTE | `EXECUTE_ALL | `STOP | `RESTART | `CLEAR | `CONFUSED
            | `SELECT_FONT | `SELECT_COLOR | `ZOOM_IN | `ZOOM_OUT | `FULLSCREEN
            | `QUIT ]
@@ -42,7 +42,8 @@ module Dialogs : sig
     on_font_change:(unit -> unit) -> unit
     -> unit
 
-  val confused : Trace.OBuf.t -> unit
+  val confused : OcamlBuffer.t -> unit
+  val submit   : OcamlBuffer.t -> unit
 end
 
 val main_window : unit -> GWindow.window

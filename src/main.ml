@@ -78,6 +78,9 @@ module BufActions = struct
   let confused buf =
     Gui.Dialogs.confused buf
 
+  let submit buf =
+    Gui.Dialogs.submit buf
+
   let quit main_window buf =
     if OBuf.is_modified buf then
       Gui.Dialogs.quit (OBuf.filename buf)
@@ -170,6 +173,7 @@ let init ?name ?contents main_window =
   Gui.Controls.bind `SAVE     @@ get_buf @@ BufActions.save_to_file ~ask:false @@ nil;
   Gui.Controls.bind `QUIT     @@ get_buf @@ BufActions.quit main_window;
   Gui.Controls.bind `CONFUSED @@ get_buf @@ BufActions.confused;
+  Gui.Controls.bind `SUBMIT   @@ get_buf @@ BufActions.submit;
   (* Initialize the top-level buffer and actions *)
   let toplevel_buffer = TopUi.create_buffer () in
   let get_top f () = get_buf (f toplevel_buffer) () in

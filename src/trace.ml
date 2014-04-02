@@ -10,6 +10,7 @@ type kind =
   | Restart
   | Timer
   | Confused of string
+  | Submit
 
 type event = {
   time : float;
@@ -32,6 +33,7 @@ let json_of_kind = function
   | Restart -> `O [("type", `String "restart")]
   | Timer   -> `O [("type", `String "timer")]
   | Confused s -> `O [("type", `String "confused"); ("why", `String s)]
+  | Submit  -> `O [("type", `String "submit")]
 
 let json_of_event evt =
   `O [("time", `Float evt.time)

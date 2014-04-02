@@ -5,10 +5,10 @@ module Pervasives = struct
   (* override stdout *)
   let stdout = stderr
   (* redefine everything that depended on it *)
-  let print_char c = output_char stdout c
-  let print_string s = output_string stdout s
-  let print_int i = output_string stdout (string_of_int i)
-  let print_float f = output_string stdout (string_of_float f)
+  let print_char c = output_char stdout c; flush stdout
+  let print_string s = output_string stdout s; flush stdout
+  let print_int i = output_string stdout (string_of_int i); flush stdout
+  let print_float f = output_string stdout (string_of_float f); flush stdout
   let print_endline s =
     output_string stdout s; output_char stdout '\n'; flush stdout
   let print_newline () = output_char stdout '\n'; flush stdout
