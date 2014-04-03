@@ -392,7 +392,9 @@ module Dialogs = struct
   let submit buf ~save =
     save ();
     Trace.trace Trace.Submit buf;
-    let cmd = Format.sprintf "turnin -c cs130s %s 2>&1" (OBuf.filename_default buf) in
+    let fn  = OBuf.filename_default buf in
+    let cmd = Format.sprintf "turnin -c cs130s -p %s %s 2>&1"
+                             (Filename.chop_extension fn) fn in
     let ic, oc = Unix.open_process cmd in
     let buf = Buffer.create 16 in
     (try
