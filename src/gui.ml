@@ -392,23 +392,25 @@ module Dialogs = struct
   let submit buf ~save =
     save ();
     Trace.trace Trace.Submit buf;
-    let fn  = OBuf.filename_default buf in
-    let cmd = Format.sprintf "turnin -c cs130s -p %s %s 2>&1"
-                             (Filename.chop_extension fn) fn in
-    let ic, oc = Unix.open_process cmd in
-    let buf = Buffer.create 16 in
-    (try
-        while true do
-          Buffer.add_channel buf ic 1
-        done
-      with End_of_file -> ());
-    let _ = Unix.close_process (ic, oc) in
-    let out = Buffer.contents buf
+    let msg = match OBuf.filename buf with
+      | None -> "This buffer is not associated with a file, please save first!"
+      | Some fn ->
+         let prj = fn |> Filename.basename |> Filename.chop_extension in
+         let cmd = Format.sprintf "turnin -c cs130s -p %s %s 2>&1" prj fn in
+         let ic, oc = Unix.open_process cmd in
+         let buf = Buffer.create 16 in
+         (try
+             while true do
+               Buffer.add_channel buf ic 1
+             done
+           with End_of_file -> ());
+         let _ = Unix.close_process (ic, oc) in
+         Buffer.contents buf
     in
     let dialog =
       GWindow.message_dialog
         ~title:"Turnin"
-        ~message:out
+        ~message:msg
         ~message_type:`INFO
         ~buttons:GWindow.Buttons.ok
         ~use_markup:true
