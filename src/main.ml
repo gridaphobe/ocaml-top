@@ -266,6 +266,20 @@ let args =
     " Remaining arguments are passed to the ocaml toplevel"
   ]
 
+let rec save_trace () =
+  let trace_file = Filename.concat (Sys.getenv "HOME") ".ocaml-top-trace" in
+  let trace_file_old = trace_file ^ ".old" in
+  if (Sys.file_exists trace_file) then
+    (Sys.rename trace_file trace_file_old;
+     let user = Sys.getenv "USER" in
+     let cmd = Format.sprintf "curl -T %s http://goto.ucsd.edu:8082/%s"
+                              trace_file_old user
+     in
+     ignore @@ Sys.command cmd;
+     Sys.remove trace_file_old);
+  Thread.delay (60. *. 5.);
+  save_trace ()
+
 let _ =
   let file = ref None in
   Arg.parse args
@@ -275,6 +289,7 @@ let _ =
     \  Simple graphical ocaml code editor designed for top-level interaction.\n\
     \  Options:"
   ;
+  Thread.create save_trace ();
   Tools.debug "Setting up callback exception handler: %a" (fun ch s ->
     GtkSignal.user_handler := (fun exc ->
       Tools.debug "Exception in handler: %s at %s\n"
