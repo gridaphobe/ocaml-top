@@ -396,7 +396,7 @@ module Dialogs = struct
       | None -> "This buffer is not associated with a file, please save first!"
       | Some fn ->
          let prj = fn |> Filename.basename |> Filename.chop_extension in
-         let cmd = Format.sprintf "ocaml %s && turnin -c cs130s -p %s %s 2>&1"
+         let cmd = Format.sprintf "ocaml %s 2>&1 && turnin -c cs130s -p %s %s 2>&1"
                                   fn prj fn
          in
          let ic, oc = Unix.open_process cmd in
