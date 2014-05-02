@@ -412,9 +412,9 @@ module Dialogs = struct
     let dialog =
       GWindow.dialog
         ~title:"Turnin"
-        ~resizable:false
-        ~height:300
-        ~width:400
+        ~resizable:true
+        ~height:400
+        ~width:600
         ~destroy_with_parent:true
         ()
     in
