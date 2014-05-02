@@ -410,19 +410,35 @@ module Dialogs = struct
          Buffer.contents buf
     in
     let dialog =
-      GWindow.message_dialog
+      GWindow.dialog
         ~title:"Turnin"
-        ~message:msg
-        ~message_type:`INFO
-        ~buttons:GWindow.Buttons.ok
-        ~use_markup:true
+        ~resizable:false
+        ~height:300
+        ~width:400
         ~destroy_with_parent:true
         ()
     in
-    let callback = function
-      | `OK | `DELETE_EVENT -> dialog#destroy ()
+    let scroll =
+      GBin.scrolled_window
+        ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC
+        ~packing:dialog#vbox#add
+        ()
     in
-    ignore @@ dialog#connect#response ~callback;
+    let text =
+      GMisc.label
+        ~text:msg
+        ~packing:scroll#add_with_viewport
+        ()
+    in
+    let button =
+      GButton.button
+        ~stock:`OK
+        ~packing:dialog#action_area#add
+        ~show:true
+        ()
+    in
+    button#grab_default ();
+    button#connect#clicked ~callback:(dialog#destroy);
     dialog#show ()
 
   let error ~title message =
