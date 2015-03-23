@@ -28,6 +28,12 @@ val top_start:
   top
   -> unit
 
+val get_phrase_strs:
+  OcamlBuffer.t ->
+  GText.iter ->
+  GText.iter ->
+  string list
+
 val topeval: ?full:bool -> OcamlBuffer.t -> top -> unit
 
 val show_spinner:  top -> GSourceView2.source_view -> bool -> unit

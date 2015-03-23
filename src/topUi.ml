@@ -36,6 +36,11 @@ let get_phrases buf (start:GText.iter) (stop:GText.iter) =
        `MARK (gbuf#create_mark start), `MARK (gbuf#create_mark stop))
     bounds
 
+let fst4 (a,_,_,_) = a
+
+let get_phrase_strs buf (start:GText.iter) (stop:GText.iter) =
+  List.map fst4 (get_phrases buf start stop)
+
 let region_to_eval buf =
   let gbuf = buf.OBuf.gbuffer in
   let eval_iter = gbuf#get_iter_at_mark buf.OBuf.eval_mark#coerce in

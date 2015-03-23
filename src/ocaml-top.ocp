@@ -21,6 +21,29 @@ begin program "ocaml-top"
         files += [ "sigint_unix.c" ]
 end
 
+begin program "get-phrases"
+      files = [ "tools.ml"
+                "cfg.ml"
+                "ocamlBuffer.ml"
+                "trace.ml"
+                "completion.ml"
+                "top.ml"
+                "topUi.ml"
+                "get_phrases.ml" ]
+      requires = [ "threads" "unix" "str"
+                   "lablgtk2"
+                   "lablgtk2-extras"
+                   "ezjsonm"
+                   "ocp-indent.lib"
+                   "ocp-index.lib" ]
+      link = [ "-thread" ]
+      comp = [ "-thread" ]
+      if system = "win32" then
+        files += [ "sigint_win.c" ]
+      else
+        files += [ "sigint_unix.c" ]
+end
+
 begin library "threads"
      installed = true
      dirname = [ "%{OCAMLLIB}%/threads" ]
