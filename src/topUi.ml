@@ -157,7 +157,7 @@ let mark_error_in_source_buffer buf start_mark end_mark start_char end_char =
 let handle_response top response response_start_mark
     buf src_start_mark src_end_mark =
   (* returns false on errors, true otherwise *)
-  Trace.trace (Trace.response response) buf;
+  Trace.trace (Trace.Response response) buf;
   let first_word line =
     let len = String.length line in
     let rec aux i = if i >= len then i else match line.[i] with
