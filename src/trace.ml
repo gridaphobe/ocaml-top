@@ -6,7 +6,7 @@ type region = GText.iter * GText.iter
 
 type kind =
   | Eval of region * string list
-  | Respose of string
+  | Response of string
   | Abort
   | Restart
   | Timer
