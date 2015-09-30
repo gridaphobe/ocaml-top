@@ -157,6 +157,7 @@ let mark_error_in_source_buffer buf start_mark end_mark start_char end_char =
 let handle_response top response response_start_mark
     buf src_start_mark src_end_mark =
   (* returns false on errors, true otherwise *)
+  Trace.trace (Trace.response response) buf;
   let first_word line =
     let len = String.length line in
     let rec aux i = if i >= len then i else match line.[i] with
@@ -289,7 +290,7 @@ let topeval ?(full=false) buf top =
                else cleanup_source_marks rest)
   in
   let phrases = get_phrases buf start stop in
-  Trace.trace (Trace.Eval (start,stop)) buf;
+  Trace.trace (Trace.Eval ((start,stop),List.map fst4 phrases)) buf;
   eval_phrases phrases
 
 let create_buffer () =

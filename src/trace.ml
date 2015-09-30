@@ -5,7 +5,8 @@ module OBuf = OcamlBuffer
 type region = GText.iter * GText.iter
 
 type kind =
-  | Eval of region
+  | Eval of region * string list
+  | Respose of string
   | Abort
   | Restart
   | Timer
@@ -28,7 +29,12 @@ let json_of_region (start, stop) = `O [("start", json_of_iter start)
                                       ;("stop", json_of_iter stop)]
 
 let json_of_kind = function
-  | Eval r  -> `O [("type", `String "eval"); ("region", json_of_region r)]
+  | Eval (r,ps) -> `O [("type", `String "eval")
+                      ;("region", json_of_region r)
+                      ;("phrases", `A (List.map (fun s -> `String s) ps))
+                      ]
+  | Response s -> `O [("type", `String "response")
+                     ;("response", `String s)]
   | Abort   -> `O [("type", `String "abort")]
   | Restart -> `O [("type", `String "restart")]
   | Timer   -> `O [("type", `String "timer")]
