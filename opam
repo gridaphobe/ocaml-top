@@ -10,7 +10,7 @@ depends: [
   "ocp-build" {>= "1.99.6-beta"}
   "lablgtk" {>= "2.16.0"}
   "conf-gtksourceview" {= "2"}
-  "ocp-indent" {>= "1.4.0"}
+  "ocp-indent" {= "1.4.1"}
   "ocp-index" {>= "1.0.0"}
   "ezjsonm" {>= "0.2.0"}
 ]

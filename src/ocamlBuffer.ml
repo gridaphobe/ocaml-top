@@ -164,10 +164,14 @@ let get_phrases buf ~start ~stop =
     | (start_mark, end_mark)::r ->
         let bop = buf.gbuffer#get_iter_at_mark start_mark#coerce in
         let eop = buf.gbuffer#get_iter_at_mark end_mark#coerce in
+        (* Printf.printf "%d-%d vs %d-%d\n" bop#offset eop#offset start#offset stop#offset; *)
         if eop#offset < start#offset || stop#offset < bop#offset then
           find r
-        else
-          (max start bop, min stop eop) :: find r
+        else begin
+          (* Printf.printf "found one!\n"; *)
+          (* (max start bop, min stop eop) :: find r *)
+          (bop, eop) :: find r
+        end
     | [] -> []
   in
   find buf.block_marks

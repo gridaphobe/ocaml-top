@@ -31,8 +31,7 @@ begin program "get-phrases"
                 "topUi.ml"
                 "get_phrases.ml" ]
       requires = [ "threads" "unix" "str"
-                   "lablgtk2"
-                   "lablgtk2-extras"
+                   "lablgtk2" "lablgtk2.sourceview2"
                    "ezjsonm"
                    "ocp-indent.lib"
                    "ocp-index.lib" ]
